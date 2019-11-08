@@ -1,7 +1,9 @@
 #!/bin/sh
 UID=$(id -u)
 
-docker run ${OPTS:-} --rm \
+docker build -t openwrt-builder .
+
+exec docker run ${OPTS:-} --rm \
   -ti \
   -v $PWD/bin:/home/openwrt/bin \
   -v $PWD/build_dir:/home/openwrt/build_dir \
