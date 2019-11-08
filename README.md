@@ -20,7 +20,6 @@ opkg install \
   minidlna \
   luci-app-minidlna \
   mwan3 \
-  ntfs-3g \
   block-mount \
   luci \
   libustream-openssl \
