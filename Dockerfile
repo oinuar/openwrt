@@ -1,8 +1,7 @@
-FROM ubuntu:18.04
+FROM ubuntu:18.04 as base
 
 RUN apt-get update && \
-    apt-get install -y sudo time git-core subversion build-essential gcc-multilib ncurses-base \
-                       libncurses5-dev zlib1g-dev gawk flex gettext wget curl unzip python && \
+    apt-get install -y sudo subversion g++ zlib1g-dev build-essential git python python3 libncurses5-dev gawk gettext unzip file libssl-dev wget libelf-dev ecj fastjar java-propose-classpath build-essential libncursesw5-dev python unzip && \
     apt-get clean
 
 RUN useradd -m openwrt &&\
@@ -17,19 +16,17 @@ ENV OPENWRT_VERSION=18.06.4
 ENV OPENWRT_CONFIG_SEED_URL=http://downloads.openwrt.org/releases/${OPENWRT_VERSION}/targets/ar71xx/generic/config.seed
 
 RUN wget -O - https://github.com/openwrt/openwrt/archive/v${OPENWRT_VERSION}.tar.gz | \
-  tar --strip=1 -xzvf - && \
-  scripts/feeds update -a
+  tar --strip=1 -xzvf -
+  
+FROM base as builder 
 
-COPY --chown=openwrt:openwrt config .config
+COPY --chown=openwrt:openwrt diffconfig .config
 
-RUN wget -O config.seed "$OPENWRT_CONFIG_SEED_URL" &&\
+RUN scripts/feeds update -a &&\
+    wget -O config.seed "$OPENWRT_CONFIG_SEED_URL" &&\
     cat config.seed >> .config &&\
-    make defconfig
-
-ENV PACKAGES="samba4-server minidlna luci-app-minidlna mwan3 \
-  prometheus-node-exporter-lua-nat_traffic \
-  prometheus-node-exporter-lua-netstat \
-  prometheus-node-exporter-lua-openwrt \
-  prometheus-node-exporter-lua-textfile"
+    make defconfig &&\
+    cat .config &&\
+    make download
 
 USER root
