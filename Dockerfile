@@ -10,10 +10,10 @@ RUN useradd -m openwrt &&\
 USER openwrt
 WORKDIR /home/openwrt
 
-ENV OPENWRT_VERSION=18.06.4
+ENV OPENWRT_VERSION=19.07.0
 
 # Change this to build for different target hardware.
-ENV OPENWRT_CONFIG_SEED_URL=http://downloads.openwrt.org/releases/${OPENWRT_VERSION}/targets/ar71xx/generic/config.seed
+ENV OPENWRT_CONFIG_SEED_URL=http://downloads.openwrt.org/releases/${OPENWRT_VERSION}/targets/ar71xx/generic/config.buildinfo
 
 RUN wget -O - https://github.com/openwrt/openwrt/archive/v${OPENWRT_VERSION}.tar.gz | \
   tar --strip=1 -xzvf -
